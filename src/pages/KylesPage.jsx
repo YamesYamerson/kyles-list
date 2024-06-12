@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Container, Row, Col } from 'react-bootstrap';
 import CategoryAccordion from '../components/CategoryAccordion';
 import SearchBar from '../components/SearchBar';
 
@@ -35,34 +34,34 @@ const KylesPage = () => {
   const filteredData = filterData(data);
 
   return (
-    <Container fluid className="mt-5">
-      <Row>
-        <Col>
+    <div className="container-fluid mt-5">
+      <div className="row">
           <h1>Kyle's Page</h1>
           <SearchBar onSearch={setSearchQuery} />
-          <Accordion defaultActiveKey="0">
-            {Object.keys(filteredData).map((category) =>
+          <div className="accordion" id="accordionExample">
+            {Object.keys(filteredData).map((category, index) =>
               typeof filteredData[category] === 'object' &&
               !Array.isArray(filteredData[category]) ? (
-                Object.keys(filteredData[category]).map((subCategory) => (
+                Object.keys(filteredData[category]).map((subCategory, subIndex) => (
                   <CategoryAccordion
-                    key={subCategory}
+                    key={`${index}-${subIndex}`}
+                    id={`${index}-${subIndex}`}
                     title={`${category} - ${subCategory}`}
                     items={filteredData[category][subCategory]}
                   />
                 ))
               ) : (
                 <CategoryAccordion
-                  key={category}
+                  key={index}
+                  id={index}
                   title={category}
                   items={filteredData[category]}
                 />
               )
             )}
-          </Accordion>
-        </Col>
-      </Row>
-    </Container>
+          </div>
+        </div>
+    </div>
   );
 };
 
