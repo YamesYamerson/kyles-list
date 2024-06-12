@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CategoryAccordion from '../components/CategoryAccordion';
 import SearchBar from '../components/SearchBar';
-import SearchResults from '../components/SearchResults';
 
 const KylesPage = () => {
   const [data, setData] = useState(null);
@@ -40,7 +39,25 @@ const KylesPage = () => {
     }
   };
 
-  if (!data) {
+  const groupByInitialLetterRange = (items) => {
+    const ranges = [
+      { start: 'A', end: 'D' },
+      { start: 'E', end: 'H' },
+      { start: 'I', end: 'L' },
+      { start: 'M', end: 'P' },
+      { start: 'Q', end: 'T' },
+      { start: 'U', end: 'Z' }
+    ];
+    return ranges.reduce((acc, range) => {
+      const key = `${range.start}-${range.end}`;
+      acc[key] = items.filter(
+        (item) => item.charAt(0).toUpperCase() >= range.start && item.charAt(0).toUpperCase() <= range.end
+      );
+      return acc;
+    }, {});
+  };
+
+  if (!filteredData) {
     return <div>Loading...</div>;
   }
 
@@ -50,32 +67,58 @@ const KylesPage = () => {
         <div className="col-12 col-lg-10">
           <h1 className="text-center">Kyle's Page</h1>
           <SearchBar onSearch={handleSearch} />
-          {searchQuery ? (
-            <SearchResults searchQuery={searchQuery} data={filteredData} />
-          ) : (
-            <div className="accordion" id="accordionExample">
-              {Object.keys(filteredData).map((category, index) =>
-                typeof filteredData[category] === 'object' &&
-                !Array.isArray(filteredData[category]) ? (
-                  Object.keys(filteredData[category]).map((subCategory, subIndex) => (
+          <div className="accordion" id="accordionExample">
+            {Object.keys(filteredData).map((category, index) => {
+              if (Array.isArray(filteredData[category])) {
+                const items = filteredData[category];
+                if (items.length > 50) {
+                  const groupedItems = groupByInitialLetterRange(items);
+                  return (
                     <CategoryAccordion
-                      key={`${index}-${subIndex}`}
-                      id={`${index}-${subIndex}`}
-                      title={`${category} - ${subCategory}`}
-                      items={filteredData[category][subCategory]}
+                      key={category}
+                      id={`category-${index}`}
+                      title={category}
+                      subCategories={groupedItems}
                     />
-                  ))
-                ) : (
-                  <CategoryAccordion
-                    key={index}
-                    id={index}
-                    title={category}
-                    items={filteredData[category]}
-                  />
-                )
-              )}
-            </div>
-          )}
+                  );
+                } else {
+                  return (
+                    <CategoryAccordion
+                      key={category}
+                      id={`category-${index}`}
+                      title={category}
+                      items={items}
+                    />
+                  );
+                }
+              } else if (typeof filteredData[category] === 'object') {
+                return Object.keys(filteredData[category]).map((subCategory, subIndex) => {
+                  const items = filteredData[category][subCategory];
+                  if (items.length > 50) {
+                    const groupedItems = groupByInitialLetterRange(items);
+                    return (
+                      <CategoryAccordion
+                        key={`${category}-${subCategory}`}
+                        id={`subcategory-${index}-${subIndex}`}
+                        title={`${category} - ${subCategory}`}
+                        subCategories={groupedItems}
+                      />
+                    );
+                  } else {
+                    return (
+                      <CategoryAccordion
+                        key={`${category}-${subCategory}`}
+                        id={`subcategory-${index}-${subIndex}`}
+                        title={`${category} - ${subCategory}`}
+                        items={items}
+                      />
+                    );
+                  }
+                });
+              }
+              return null;
+            })}
+          </div>
         </div>
       </div>
     </div>
