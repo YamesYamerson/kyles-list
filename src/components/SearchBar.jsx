@@ -6,7 +6,7 @@ const SearchBar = ({ onSearch }) => {
   };
 
   return (
-    <div className="my-5git">
+    <div className="my-4">
       <input
         type="text"
         className="form-control"
