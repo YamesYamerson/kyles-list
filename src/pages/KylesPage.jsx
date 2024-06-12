@@ -35,8 +35,9 @@ const KylesPage = () => {
 
   return (
     <div className="container-fluid mt-5">
-      <div className="row">
-          <h1>Kyle's Page</h1>
+      <div className="row justify-content-center">
+        <div className="col-12 col-lg-10">
+          <h1 className="text-center">Kyle's Page</h1>
           <SearchBar onSearch={setSearchQuery} />
           <div className="accordion" id="accordionExample">
             {Object.keys(filteredData).map((category, index) =>
@@ -61,6 +62,7 @@ const KylesPage = () => {
             )}
           </div>
         </div>
+      </div>
     </div>
   );
 };
