@@ -34,7 +34,7 @@ const KylesPage = () => {
   const filteredData = filterData(data);
 
   return (
-    <div className="container-fluid mt-5">
+    <div className="container-fluid my-5">
       <div className="row justify-content-center">
         <div className="col-12 col-lg-10">
           <h1 className="text-center">Kyle's Page</h1>
