@@ -8,7 +8,7 @@ const KylesPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetch('/src/assets/data/medialist.json')
+    fetch('/medialist.json')
       .then((response) => response.json())
       .then((jsonData) => {
         setData(jsonData);
