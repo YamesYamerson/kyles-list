@@ -1,42 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { Button, Collapse } from 'react-bootstrap';
+import { Book, MusicNote, Film, Tv, MusicPlayer, FileEarmarkMusic, Image, FileEarmark, Disc, Cassette, Vinyl, Database, Controller } from 'react-bootstrap-icons';
 import CategoryAccordion from '../components/CategoryAccordion';
-import SearchBar from '../components/SearchBar';
 
-const KylesPage = () => {
-  const [data, setData] = useState(null);
-  const [filteredData, setFilteredData] = useState(null);
+const KylesPage = ({ data }) => {
+  const [filteredData, setFilteredData] = useState(data);
   const [searchQuery, setSearchQuery] = useState('');
+  const [openCategory, setOpenCategory] = useState({ audio: false, video: false, text: false, other: false });
 
   useEffect(() => {
-    fetch('/medialist.json')
-      .then((response) => response.json())
-      .then((jsonData) => {
-        setData(jsonData);
-        setFilteredData(jsonData);
-      })
-      .catch((error) => console.error('Error loading JSON data:', error));
-  }, []);
+    setFilteredData(data);
+  }, [data]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    if (query === '') {
-      setFilteredData(data);
-    } else {
-      const queryLowerCase = query.toLowerCase();
-      const filterData = (data) => {
-        return Object.keys(data).reduce((acc, key) => {
-          if (Array.isArray(data[key])) {
-            acc[key] = data[key].filter((item) =>
-              item.toLowerCase().includes(queryLowerCase)
-            );
-          } else if (typeof data[key] === 'object') {
-            acc[key] = filterData(data[key]);
-          }
-          return acc;
-        }, {});
-      };
-      setFilteredData(filterData(data));
-    }
+    // Implement search functionality here
+  };
+
+  const toggleCategory = (category) => {
+    setOpenCategory((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
   };
 
   const groupByInitialLetterRange = (items) => {
@@ -62,11 +47,145 @@ const KylesPage = () => {
   }
 
   return (
-    <div className="container-fluid my-5">
-      <div className="row justify-content-center">
+    <div className="container-fluid">
+      <div className="row justify-content-center mt-4">
         <div className="col-12 col-lg-10">
-          <h1 className="text-center">Kyle's Page</h1>
-          <SearchBar onSearch={handleSearch} />
+          {/* Search Bar Placeholder */}
+          <div className="mb-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+          </div>
+
+          {/* Audio Category */}
+          <div className="my-4">
+            <Button variant="outline-primary" className="w-100" onClick={() => toggleCategory('audio')}>
+              Audio
+            </Button>
+            <Collapse in={openCategory.audio}>
+              <div className="row text-center mt-2">
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <MusicNote className="me-2" /> Music
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <MusicPlayer className="me-2" /> Audio Book
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Disc className="me-2" /> CD
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Cassette className="me-2" /> Cassette
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Vinyl className="me-2" /> Record
+                  </Button>
+                </div>
+              </div>
+            </Collapse>
+          </div>
+
+          {/* Video Category */}
+          <div className="my-4">
+            <Button variant="outline-primary" className="w-100" onClick={() => toggleCategory('video')}>
+              Video
+            </Button>
+            <Collapse in={openCategory.video}>
+              <div className="row text-center mt-2">
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Film className="me-2" /> Movie
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Tv className="me-2" /> TV Show
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Controller className="me-2" /> Nintendo
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Controller className="me-2" /> Sega/Sony
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Controller className="me-2" /> Microsoft
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Controller className="me-2" /> Computer
+                  </Button>
+                </div>
+              </div>
+            </Collapse>
+          </div>
+
+          {/* Text Category */}
+          <div className="my-4">
+            <Button variant="outline-primary" className="w-100" onClick={() => toggleCategory('text')}>
+              Text
+            </Button>
+            <Collapse in={openCategory.text}>
+              <div className="row text-center mt-2">
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Book className="me-2" /> Book
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <FileEarmarkMusic className="me-2" /> Music Book
+                  </Button>
+                </div>
+              </div>
+            </Collapse>
+          </div>
+
+          {/* Other Category */}
+          <div className="my-4">
+            <Button variant="outline-primary" className="w-100" onClick={() => toggleCategory('other')}>
+              Other
+            </Button>
+            <Collapse in={openCategory.other}>
+              <div className="row text-center mt-2">
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Image className="me-2" /> Image
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <FileEarmark className="me-2" /> GIF
+                  </Button>
+                </div>
+                <div className="col-6 col-md-4 col-lg-3 mb-3">
+                  <Button variant="outline-primary" className="w-100">
+                    <Database className="me-2" /> Data
+                  </Button>
+                </div>
+              </div>
+            </Collapse>
+          </div>
+
+          {/* Accordion */}
           <div className="accordion" id="accordionExample">
             {Object.keys(filteredData).map((category, index) => {
               if (Array.isArray(filteredData[category])) {
